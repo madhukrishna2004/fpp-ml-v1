@@ -1,0 +1,11 @@
+flask
+flask-cors
+gunicorn
+opencv-python-headless
+insightface
+onnxruntime
+numpy
+requests
+firebase-admin
+cryptography
+psutil
