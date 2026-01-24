@@ -6,14 +6,13 @@ ENV PIP_NO_CACHE_DIR=1
 
 WORKDIR /app
 
-# Upgrade pip tools
 RUN pip install --upgrade pip setuptools wheel
 
-# Install Python dependencies (wheels only)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
+# 🔒 Force wheels only (no source builds)
+RUN pip install --no-cache-dir --only-binary=:all: -r requirements.txt
+
 COPY . .
 
 EXPOSE 8080
