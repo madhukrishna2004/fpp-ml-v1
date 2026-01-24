@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -9,11 +9,11 @@ WORKDIR /app
 # Upgrade pip tools
 RUN pip install --upgrade pip setuptools wheel
 
-# Install Python dependencies
+# Install Python dependencies (wheels only)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Copy app code
 COPY . .
 
 EXPOSE 8080
