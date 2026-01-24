@@ -7,8 +7,7 @@ ENV PIP_NO_CACHE_DIR=1
 WORKDIR /app
 
 # --------------------------------------------------
-# 1️⃣ Minimal system deps REQUIRED for insightface
-# (g++ is NON-NEGOTIABLE – insightface has C++ code)
+# 1️⃣ System deps REQUIRED for insightface
 # --------------------------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -23,13 +22,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --upgrade pip setuptools wheel
 
 # --------------------------------------------------
-# 3️⃣ Copy requirements (for caching)
+# 3️⃣ Install BUILD-TIME deps for insightface
+# --------------------------------------------------
+RUN pip install Cython
+
+# --------------------------------------------------
+# 4️⃣ Copy requirements (cache layer)
 # --------------------------------------------------
 COPY requirements.txt .
 
 # --------------------------------------------------
-# 4️⃣ Install SAFE wheels-only deps (NO source builds)
-# IMPORTANT: numpy version MUST be quoted
+# 5️⃣ Install SAFE wheels-only deps
 # --------------------------------------------------
 RUN pip install --only-binary=:all: \
     flask \
@@ -45,21 +48,15 @@ RUN pip install --only-binary=:all: \
     packaging
 
 # --------------------------------------------------
-# 5️⃣ Install InsightFace separately (SOURCE BUILD)
+# 6️⃣ Install InsightFace (SOURCE BUILD)
 # --------------------------------------------------
 RUN pip install insightface==0.7.3 --no-build-isolation
 
 # --------------------------------------------------
-# 6️⃣ Copy application code
+# 7️⃣ Copy application code
 # --------------------------------------------------
 COPY . .
 
-# --------------------------------------------------
-# 7️⃣ App Runner port
-# --------------------------------------------------
 EXPOSE 8080
 
-# --------------------------------------------------
-# 8️⃣ Gunicorn entrypoint
-# --------------------------------------------------
 CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "2", "--timeout", "180"]
