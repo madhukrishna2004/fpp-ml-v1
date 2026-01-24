@@ -15,5 +15,6 @@ def health():
         "env": os.getenv("ENV", "dev"),
         "uptime_seconds": int(time.time() - START_TIME),
         "memory_mb": round(psutil.virtual_memory().used / (1024 * 1024), 2),
-        "cpu_percent": psutil.cpu_percent(interval=0.1)
-    })
+        # ✅ NON-BLOCKING CPU call
+        "cpu_percent": psutil.cpu_percent(interval=None)
+    }), 200

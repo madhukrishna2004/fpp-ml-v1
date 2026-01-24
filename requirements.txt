@@ -9,3 +9,6 @@ requests
 firebase-admin
 cryptography
 psutil
+packaging>=23.0
+setuptools>=68.0
+wheel
