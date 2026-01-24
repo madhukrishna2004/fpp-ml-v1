@@ -1,14 +1,19 @@
 flask
 flask-cors
 gunicorn
+
 opencv-python-headless
 insightface
 onnxruntime
+
 numpy
 requests
 firebase-admin
 cryptography
 psutil
+
+# REQUIRED for insightface → skimage
+scikit-image
 packaging>=23.0
 setuptools>=68.0
 wheel
