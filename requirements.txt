@@ -4,17 +4,15 @@ gunicorn
 
 opencv-python-headless
 
+numpy<2.0
+insightface==0.7.3
 onnxruntime
 
-numpy
 requests
 firebase-admin
 cryptography
 psutil
 
-# REQUIRED for insightface → skimage
-scikit-image
 packaging>=23.0
 setuptools>=68.0
 wheel
-insightface==0.7.3
