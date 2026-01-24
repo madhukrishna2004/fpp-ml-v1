@@ -6,12 +6,29 @@ ENV PIP_NO_CACHE_DIR=1
 
 WORKDIR /app
 
+# ---- base tools (NO apt needed) ----
 RUN pip install --upgrade pip setuptools wheel
 
 COPY requirements.txt .
 
-# wheels-only is now SAFE on Python 3.9
-RUN pip install --no-cache-dir --only-binary=:all: -r requirements.txt
+# 1️⃣ Install all SAFE wheels-only deps (exclude insightface)
+RUN pip install --only-binary=:all: \
+    flask \
+    flask-cors \
+    gunicorn \
+    opencv-python-headless \
+    numpy<2.0 \
+    onnxruntime \
+    requests \
+    firebase-admin \
+    cryptography \
+    psutil \
+    packaging \
+    setuptools \
+    wheel
+
+# 2️⃣ Install InsightFace ALONE (allow source build)
+RUN pip install insightface==0.7.3 --no-build-isolation
 
 COPY . .
 
