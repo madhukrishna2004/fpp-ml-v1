@@ -21,10 +21,18 @@ def create_app():
             "status": "running"
         }
 
-    # ✅ Health MUST be ultra-light
+    # ✅ Health route MUST be first & ultra-light
     app.register_blueprint(health_bp)
 
-    # ✅ Register heavy routes after
+    # 🔒 Lazy Firebase init — ONLY when needed
+    @app.before_request
+    def init_firebase_once():
+        global firebase_initialized
+        if not firebase_initialized:
+            init_firebase()
+            firebase_initialized = True
+
+    # ✅ Heavy routes AFTER health + firebase guard
     app.register_blueprint(enroll_bp)
     app.register_blueprint(scan_bp)
 
@@ -32,19 +40,6 @@ def create_app():
 
 
 app = create_app()
-
-
-# ✅ Initialize Firebase SAFELY (once, guarded)
-def init_once():
-    global firebase_initialized
-    if not firebase_initialized:
-        init_firebase()
-        firebase_initialized = True
-
-
-# ✅ Wrap Gunicorn startup
-init_once()
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
